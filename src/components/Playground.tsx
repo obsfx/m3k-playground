@@ -69,6 +69,8 @@ const PlaygroundBottomWrapper = styled.div`
 `
 
 const OutputWrapper = styled.div`
+  border-left: 4px solid #e5e5e5;
+  box-sizing: border-box;
   width: 50%;
 
   iframe {
@@ -142,18 +144,30 @@ export const Playground: React.FC<{
 
   const sourceEditor = useRef(null)
 
-  const compile = () => {
+  const handleCompileButtonClick = () => {
     if (sourceEditor) {
       setSource((sourceEditor as any).current.getValue())
     }
   }
 
+  const printError = (name: string, message: string) => {
+    eval(`
+        const __document = document.getElementById('m3k-playground-output').contentWindow.document;
+        __document.body.innerHTML = '<div style="color: red; font-family: sans-serif; margin: 10px; padding: 10px; background-color: #ffe7e7;">${name}: ${message}</div>';
+      `)
+  }
+
   useEffect(() => {
-    const tokens: Token[] = m3k.tokenize(source)
-    const ast: AST = m3k.parse(tokens)
-    const transformedAST: AST = m3k.transform(ast)
-    const code: string = m3k.generate(transformedAST)
-    setCompiled(beautify(code, { indent_size: 2, space_in_empty_paren: true }))
+    try {
+      alert('kek')
+      const tokens: Token[] = m3k.tokenize(source)
+      const ast: AST = m3k.parse(tokens)
+      const transformedAST: AST = m3k.transform(ast)
+      const code: string = m3k.generate(transformedAST)
+      setCompiled(beautify(code, { indent_size: 2, space_in_empty_paren: true }))
+    } catch (e) {
+      printError(e.name, e.message)
+    }
   }, [source])
 
   useEffect(() => {
@@ -163,7 +177,11 @@ export const Playground: React.FC<{
       ${compiled.split('document').join('__document')}
     `
 
-    eval(evalCode)
+    try {
+      eval(evalCode)
+    } catch (e) {
+      printError(e.name, e.message)
+    }
   }, [compiled])
 
   return (
@@ -199,7 +217,7 @@ export const Playground: React.FC<{
 
       <PlaygroundBottomWrapper>
         <ButtonsWrapper>
-          <CompileButton onClick={compile}>
+          <CompileButton onClick={handleCompileButtonClick}>
             <FiPlay />
             Compile & Run
           </CompileButton>

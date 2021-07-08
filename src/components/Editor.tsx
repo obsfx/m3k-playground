@@ -16,7 +16,6 @@ export const Editor: React.FC<{
       defaultLanguage="scheme"
       value={code}
       options={{
-        lineNumbers: 'off',
         fontSize: 14,
         fontFamily: 'Ubuntu Mono',
         minimap: {
