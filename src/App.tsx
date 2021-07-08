@@ -1,9 +1,12 @@
 import { Playground } from './components/Playground'
 
-const defaultValue = `(define canvas ((getval create-element document) "canvas"))
+const defaultValue = `((getval set-attribute (getval body document)) "style" "margin: 0px")
+
+(define canvas ((getval create-element document) "canvas"))
 (define ctx ((getval get-context canvas) "2d"))
 (set! (getval width canvas) 400)
 (set! (getval height canvas) 400)
+((getval set-attribute canvas) "style" "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)")
 
 ((getval append-child (getval body document)) canvas)
 
@@ -39,7 +42,7 @@ const defaultValue = `(define canvas ((getval create-element document) "canvas")
 export const App: React.FC = () => {
   return (
     <div>
-      <Playground width="1400px" height="720px" code={defaultValue} />
+      <Playground width="1360px" height="720px" code={defaultValue} />
     </div>
   )
 }

@@ -47,6 +47,7 @@ const PlaygroundEditorSectionTitle = styled.div`
   left: 5px;
   position absolute;
   z-index: 2;
+  user-select: none;
   transform-origin: 0 0;
   transform: rotate(90deg) translate(-50%, -25px);
 `
@@ -58,7 +59,9 @@ const EditorWrapper = styled.div`
   background-color: #fffffe;
   position: relative;
   z-index: 1;
-  color: #ffffff;
+  color: #0a0a0a;
+  font-size: 12px;
+  font-weight: 500;
 `
 
 const PlaygroundBottomWrapper = styled.div`
@@ -134,39 +137,41 @@ const PlaygroundGithub = styled.a`
   }
 `
 
+const Error = styled.div`
+  margin: 10px;
+  color: red;
+  border: 1px solid red;
+  background-color: #ffe2e2;
+  padding: 12px;
+`
+
 export const Playground: React.FC<{
   width: string
   height: string
   code: string
 }> = ({ width, height, code }) => {
-  const [source, setSource] = useState(code)
-  const [compiled, setCompiled] = useState('')
+  const [source, setSource] = useState({ code })
+  const [compiled, setCompiled] = useState({ code: '' })
+  const [error, setError] = useState<{ name: string; message: string } | null>(null)
 
   const sourceEditor = useRef(null)
 
   const handleCompileButtonClick = () => {
     if (sourceEditor) {
-      setSource((sourceEditor as any).current.getValue())
+      setSource({ code: (sourceEditor as any).current.getValue() })
     }
   }
 
-  const printError = (name: string, message: string) => {
-    eval(`
-        const __document = document.getElementById('m3k-playground-output').contentWindow.document;
-        __document.body.innerHTML = '<div style="color: red; font-family: sans-serif; margin: 10px; padding: 10px; background-color: #ffe7e7;">${name}: ${message}</div>';
-      `)
-  }
-
   useEffect(() => {
+    setError(null)
     try {
-      alert('kek')
-      const tokens: Token[] = m3k.tokenize(source)
+      const tokens: Token[] = m3k.tokenize(source.code)
       const ast: AST = m3k.parse(tokens)
       const transformedAST: AST = m3k.transform(ast)
       const code: string = m3k.generate(transformedAST)
-      setCompiled(beautify(code, { indent_size: 2, space_in_empty_paren: true }))
+      setCompiled({ code: beautify(code, { indent_size: 2, space_in_empty_paren: true }) })
     } catch (e) {
-      printError(e.name, e.message)
+      setError(e)
     }
   }, [source])
 
@@ -174,13 +179,14 @@ export const Playground: React.FC<{
     const evalCode = `
       const __document = document.getElementById('m3k-playground-output').contentWindow.document;
       __document.body.innerHTML = '';
-      ${compiled.split('document').join('__document')}
-    `
+      ${compiled.code.split('document').join('__document')}
+      `
 
     try {
+      // eslint-disable-next-line
       eval(evalCode)
     } catch (e) {
-      printError(e.name, e.message)
+      setError(e)
     }
   }, [compiled])
 
@@ -194,7 +200,7 @@ export const Playground: React.FC<{
               <Editor
                 width="100%"
                 height="100%"
-                code={source}
+                code={source.code}
                 onMount={(editor) => {
                   sourceEditor.current = editor
                 }}
@@ -205,13 +211,19 @@ export const Playground: React.FC<{
           <PlaygroundEditorSectionWrapper height={height}>
             <PlaygroundEditorSectionTitle>Compiled JavaScript</PlaygroundEditorSectionTitle>
             <EditorWrapper>
-              <Editor width="100%" height="100%" code={compiled} readOnly={true} />
+              <Editor width="100%" height="100%" code={compiled.code} readOnly={true} />
             </EditorWrapper>
           </PlaygroundEditorSectionWrapper>
         </PlaygroundEditorSections>
 
         <OutputWrapper>
-          <iframe id="m3k-playground-output" title="m3k playground"></iframe>
+          {error ? (
+            <Error>
+              {error.name}: {error.message}
+            </Error>
+          ) : (
+            <iframe id="m3k-playground-output" title="m3k playground"></iframe>
+          )}
         </OutputWrapper>
       </PlaygroundBodyWrapper>
 
