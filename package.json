@@ -1,6 +1,6 @@
 {
   "name": "m3k-playground",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "playground component of m3k",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/obsfx/m3k-playground.git"
   },
-  "keywords": ["playground", "compiler", "react"],
+  "keywords": [
+    "playground",
+    "compiler",
+    "react"
+  ],
   "author": "Ömercan Balandı <balandiomer@gmail.com>",
   "license": "GPL-3.0",
   "bugs": {
@@ -38,5 +42,8 @@
     "typeface-inter": "^3.18.1",
     "typeface-ubuntu-mono": "^1.1.13"
   },
-  "files": ["dist", "README.md"]
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }
