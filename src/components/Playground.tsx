@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { FiPlay, FiBox } from 'react-icons/fi'
 import styled from 'styled-components'
 // @ts-ignore

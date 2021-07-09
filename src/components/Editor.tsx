@@ -1,3 +1,4 @@
+import React from 'react'
 import MonacoEditor from '@monaco-editor/react'
 import 'typeface-ubuntu-mono'
 
