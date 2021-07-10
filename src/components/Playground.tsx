@@ -99,6 +99,7 @@ const CompileButton = styled.div`
 
   svg {
     padding-right: 6px;
+    font-size: 18px;
   }
 
   &:hover {
@@ -125,6 +126,7 @@ const PlaygroundInfoTitle = styled.div`
 
   svg {
     padding-right: 6px;
+    font-size: 18px;
   }
 `
 
