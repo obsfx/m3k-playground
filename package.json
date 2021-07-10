@@ -1,6 +1,6 @@
 {
   "name": "m3k-playground",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "playground component of m3k",
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
